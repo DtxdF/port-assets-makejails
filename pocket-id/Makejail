@@ -1,0 +1,21 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+PKG git-tiny npm
+
+CMD git clone https://github.com/pocket-id/pocket-id.git && \
+    cd pocket-id && \
+    git checkout tags/${version} && \
+    cd frontend && \
+    npm ci && \
+    env BUILD_OUTPUT_PATH=dist npm run build && \
+    cp -a dist /pocket-id-frontend && \
+    tar --gzip -C / -cf /pocket-id.${version}.frontend.tar.gz pocket-id-frontend
+CMD --local-jaildir cp -a pocket-id.${version}.frontend.tar.gz "${output}"
