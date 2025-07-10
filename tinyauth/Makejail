@@ -1,0 +1,21 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+PKG git-tiny npm
+
+CMD git clone https://github.com/steveiliop56/tinyauth.git && \
+    cd tinyauth && \
+    git checkout tags/${version} && \
+    cd frontend && \
+    npm install && \
+    npm run build && \
+    cp -a dist /tinyauth-frontend && \
+    tar --gzip -C / -cf /tinyauth.${version}.frontend.tar.gz tinyauth-frontend
+CMD --local-jaildir cp -a tinyauth.${version}.frontend.tar.gz "${output}"
