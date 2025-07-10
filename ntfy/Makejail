@@ -1,0 +1,19 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+PKG git-tiny npm gmake
+
+CMD git clone https://github.com/binwiederhier/ntfy.git && \
+    cd ntfy && \
+    git checkout tags/${version} && \
+    gmake web && \
+    cp -a server/site /ntfy-frontend && \
+    tar --gzip -C / -cf /ntfy.${version}.frontend.tar.gz ntfy-frontend
+CMD --local-jaildir cp -a ntfy.${version}.frontend.tar.gz "${output}"
