@@ -17,5 +17,5 @@ CMD git clone https://github.com/filebrowser/filebrowser.git && \
     corepack enable && \
     env CI=true pnpm install --frozen-lockfile && env CI=true pnpm run build && \
     cp -a dist /filebrowser-frontend && \
-    tar --gzip -C / -cf /filebrowser.${version}.frontend.tar.gz filebrowser-frontend
-CMD --local-jaildir cp -a filebrowser.${version}.frontend.tar.gz "${output}"
+    tar --gzip -C / -cf /filebrowser-${version}.frontend.tar.gz filebrowser-frontend
+CMD --local-jaildir cp -a filebrowser-${version}.frontend.tar.gz "${output}"

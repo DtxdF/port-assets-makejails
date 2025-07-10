@@ -15,5 +15,5 @@ CMD git clone https://github.com/binwiederhier/ntfy.git && \
     git checkout tags/${version} && \
     gmake web && \
     cp -a server/site /ntfy-frontend && \
-    tar --gzip -C / -cf /ntfy.${version}.frontend.tar.gz ntfy-frontend
-CMD --local-jaildir cp -a ntfy.${version}.frontend.tar.gz "${output}"
+    tar --gzip -C / -cf /ntfy-${version}.frontend.tar.gz ntfy-frontend
+CMD --local-jaildir cp -a ntfy-${version}.frontend.tar.gz "${output}"

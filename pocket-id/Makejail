@@ -17,5 +17,5 @@ CMD git clone https://github.com/pocket-id/pocket-id.git && \
     npm ci && \
     env BUILD_OUTPUT_PATH=dist npm run build && \
     cp -a dist /pocket-id-frontend && \
-    tar --gzip -C / -cf /pocket-id.${version}.frontend.tar.gz pocket-id-frontend
-CMD --local-jaildir cp -a pocket-id.${version}.frontend.tar.gz "${output}"
+    tar --gzip -C / -cf /pocket-id-${version}.frontend.tar.gz pocket-id-frontend
+CMD --local-jaildir cp -a pocket-id-${version}.frontend.tar.gz "${output}"

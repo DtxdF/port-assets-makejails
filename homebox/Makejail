@@ -18,5 +18,5 @@ CMD git clone https://github.com/sysadminsmedia/homebox.git && \
     env CI=true pnpm install --frozen-lockfile && \
     env CI=true pnpm build && \
     cp -a .output/public /homebox-frontend && \
-    tar --gzip -C / -cf /homebox.${version}.frontend.tar.gz homebox-frontend
-CMD --local-jaildir cp -a homebox.${version}.frontend.tar.gz "${output}"
+    tar --gzip -C / -cf /homebox-${version}.frontend.tar.gz homebox-frontend
+CMD --local-jaildir cp -a homebox-${version}.frontend.tar.gz "${output}"

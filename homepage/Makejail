@@ -25,5 +25,5 @@ CMD git clone https://github.com/gethomepage/homepage.git && \
     cp -a .next/standalone/ /homepage-files && \
     cp -a .next/static/ /homepage-files/.next/static && \
     rm -rf /homepage-files/config && \
-    tar --gzip -C / -cf /homepage.${version}.frontend.tar.gz homepage-files
-CMD --local-jaildir cp -a homepage.${version}.frontend.tar.gz "${output}"
+    tar --gzip -C / -cf /homepage-${version}.frontend.tar.gz homepage-files
+CMD --local-jaildir cp -a homepage-${version}.frontend.tar.gz "${output}"
