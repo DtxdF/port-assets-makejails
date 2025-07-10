@@ -1,0 +1,21 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+PKG git-tiny npm
+
+CMD git clone https://github.com/filebrowser/filebrowser.git && \
+    cd filebrowser && \
+    git checkout tags/${version} && \
+    cd frontend && \
+    corepack enable && \
+    env CI=true pnpm install --frozen-lockfile && env CI=true pnpm run build && \
+    cp -a dist /filebrowser-frontend && \
+    tar --gzip -C / -cf /filebrowser.${version}.frontend.tar.gz filebrowser-frontend
+CMD --local-jaildir cp -a filebrowser.${version}.frontend.tar.gz "${output}"
