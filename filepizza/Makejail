@@ -1,0 +1,24 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+PKG git-tiny npm
+
+CMD git clone https://github.com/kern/filepizza.git && \
+    cd filepizza && \
+    git checkout ${version} && \
+    corepack enable && \
+    env CI=true pnpm install --frozen-lockfile && \
+    env CI=true pnpm build && \
+    mkdir -p /filepizza-files && \
+    cp -a public /filepizza-files && \
+    cp -a .next/standalone/ /filepizza-files && \
+    cp -a .next/static/ /filepizza-files/.next/static && \
+    tar --gzip -C / -cf /filepizza-${version}.tar.gz filepizza-files
+CMD --local-jaildir cp -a filepizza-${version}.tar.gz "${output}"

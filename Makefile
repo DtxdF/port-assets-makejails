@@ -3,7 +3,8 @@ PORTS=	filebrowser \
 		homepage \
 		ntfy \
 		pocket-id \
-		tinyauth
+		tinyauth \
+		filepizza
 
 all: build
 
