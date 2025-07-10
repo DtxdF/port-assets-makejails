@@ -1,0 +1,22 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+PKG git-tiny npm
+
+CMD git clone https://github.com/sysadminsmedia/homebox.git && \
+    cd homebox && \
+    git checkout tags/${version} && \
+    cd frontend && \
+    corepack enable && \
+    env CI=true pnpm install --frozen-lockfile && \
+    env CI=true pnpm build && \
+    cp -a .output/public /homebox-frontend && \
+    tar --gzip -C / -cf /homebox.${version}.frontend.tar.gz homebox-frontend
+CMD --local-jaildir cp -a homebox.${version}.frontend.tar.gz "${output}"
