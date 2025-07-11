@@ -4,7 +4,8 @@ PORTS=	filebrowser \
 		ntfy \
 		pocket-id \
 		tinyauth \
-		filepizza
+		filepizza \
+		readur
 
 all: build
 

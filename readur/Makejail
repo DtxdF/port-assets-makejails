@@ -1,0 +1,21 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+PKG git-tiny npm
+
+CMD git clone https://github.com/readur/readur.git && \
+    cd readur && \
+    git checkout ${version} && \
+    cd frontend && \
+    npm install && \
+    npm run build && \
+    cp -a dist /readur-frontend && \
+    tar --gzip -C / -cf /readur-${version}.tar.gz readur-frontend
+CMD --local-jaildir cp -a readur-${version}.tar.gz "${output}"
