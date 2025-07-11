@@ -17,5 +17,5 @@ CMD git clone https://github.com/readur/readur.git && \
     npm install && \
     npm run build && \
     cp -a dist /readur-frontend && \
-    tar --gzip -C / -cf /readur-${version}.tar.gz readur-frontend
-CMD --local-jaildir cp -a readur-${version}.tar.gz "${output}"
+    tar --gzip -C / -cf /readur-${version}.frontend.tar.gz readur-frontend
+CMD --local-jaildir cp -a readur-${version}.frontend.tar.gz "${output}"
