@@ -5,7 +5,8 @@ PORTS=	filebrowser \
 		pocket-id \
 		tinyauth \
 		filepizza \
-		readur
+		readur \
+		backrest
 
 all: build
 

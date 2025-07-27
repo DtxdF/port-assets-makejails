@@ -1,0 +1,87 @@
+kind: vmJail
+datacenters:
+  main:
+    entrypoint: !ENV '${ENTRYPOINT}'
+    access_token: !ENV '${ACCESS_TOKEN}'
+deployIn:
+  labels:
+    - desktop
+vmName: backrest
+makejail: 'gh+DtxdF/vm-makejail'
+options:
+  - fstab: '"/var/os-images/uploads" /vm/.img nullfs ro'
+  - pkg: grub2-bhyve
+  - pkg: qemu-tools
+template:
+  loader: 'grub'
+  cpu: '4'
+  memory: '2G'
+  network0_type: 'virtio-net'
+  network0_switch: 'public'
+  wired_memory: 'YES'
+  grub_run_partition: '1'
+  grub_run_dir: '/boot/grub'
+  uuid: !ENV '${INSTANCE_ID}'
+diskLayout:
+  driver: 'ahci-hd'
+  size: '40G'
+  from:
+    type: 'img'
+    imgFile: 'debian-13-generic-amd64-daily.qcow2'
+cloud-init:
+  meta-data:
+    instance-id: !ENV '${INSTANCE_ID}'
+    local-hostname: backrest.lan
+  network-config:
+    version: 2
+    ethernets:
+      id0:
+        match:
+            name: 'enp0s5'
+        addresses:
+          - 192.168.8.2/24
+        routes:
+            - to: default
+              via: 192.168.8.1
+        nameservers:
+          search: []
+          addresses: [172.0.0.1]
+  user-data:
+    resize_rootfs: True
+    manage_etc_hosts: localhost
+    user:
+        name: user
+        homedir: '/user'
+        ssh_authorized_keys:
+            - !ENV '${SSH_KEY}'
+        sudo: 'ALL=(ALL) NOPASSWD:ALL'
+    package_update: True
+    package_upgrade: True
+    packages:
+      - git
+      - golang-go
+      - npm
+    write_files:
+      - path: /build.sh
+        content: |
+          #!/bin/sh
+          
+          set -xe
+          set -o pipefail
+
+          export HOME=/root
+
+          git clone https://github.com/garethgeorge/backrest.git &&
+          cd backrest &&
+          git checkout tags/%%VERSION%% &&
+          /usr/lib/go-1.24/bin/go mod tidy &&
+          corepack enable &&
+          env CI=true pnpm --prefix webui install &&
+          env BACKREST_BUILD_VERSION=%%VERSION%% /usr/lib/go-1.24/bin/go generate ./... &&
+          cp -a webui/dist /backrest-frontend &&
+          tar --gzip -C / -cf /backrest-%%VERSION%%.frontend.tar.gz backrest-frontend
+        permissions: '0555'
+    runcmd:
+      - ['sh', '-c', 'curl -x socks5://10.0.0.50:9050 -fsSL https://tailscale.com/install.sh | sh']
+      - ['tailscale', 'up', !ENV '--auth-key=${TS_AUTH_KEY}']
+      - ['/build.sh']
