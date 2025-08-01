@@ -1,5 +1,5 @@
 JAIL?=		filepizza-files
-VERSION?=	4db3b94b68f0a7517842a54e590ab72e23293ebc
+VERSION?=	8ea276d2df0f10c6bb4191203e682b96c22a77d8
 OUTPUT?=	${PWD}
 
 all: build stop
