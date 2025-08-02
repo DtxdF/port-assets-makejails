@@ -1,5 +1,5 @@
 JAIL?=		ntfy-frontend
-VERSION?=	v2.12.0
+VERSION?=	v2.13.0
 OUTPUT?=	${PWD}
 
 all: build stop
