@@ -27,7 +27,7 @@ diskLayout:
   size: '40G'
   from:
     type: 'img'
-    imgFile: 'debian-13-generic-amd64-daily.qcow2'
+    imgFile: 'debian-13-genericcloud-amd64.qcow2'
 cloud-init:
   meta-data:
     instance-id: !ENV '${INSTANCE_ID}'
@@ -73,13 +73,13 @@ cloud-init:
 
           git clone https://github.com/garethgeorge/backrest.git &&
           cd backrest &&
-          git checkout tags/v1.8.1 &&
+          git checkout tags/v1.9.1 &&
           /usr/lib/go-1.24/bin/go mod tidy &&
           corepack enable &&
           env CI=true pnpm --prefix webui install &&
-          env BACKREST_BUILD_VERSION=v1.8.1 /usr/lib/go-1.24/bin/go generate ./... &&
+          env BACKREST_BUILD_VERSION=v1.9.1 /usr/lib/go-1.24/bin/go generate ./... &&
           cp -a webui/dist /backrest-frontend &&
-          tar --gzip -C / -cf /backrest-v1.8.1.frontend.tar.gz backrest-frontend
+          tar --gzip -C / -cf /backrest-v1.9.1.frontend.tar.gz backrest-frontend
         permissions: '0555'
     runcmd:
       - ['sh', '-c', 'curl -x socks5://10.0.0.50:9050 -fsSL https://tailscale.com/install.sh | sh']

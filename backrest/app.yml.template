@@ -27,7 +27,7 @@ diskLayout:
   size: '40G'
   from:
     type: 'img'
-    imgFile: 'debian-13-generic-amd64-daily.qcow2'
+    imgFile: 'debian-13-genericcloud-amd64.qcow2'
 cloud-init:
   meta-data:
     instance-id: !ENV '${INSTANCE_ID}'
