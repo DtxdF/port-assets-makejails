@@ -8,13 +8,17 @@ OPTION ip4_inherit
 OPTION ip6_inherit
 OPTION ephemeral
 
-PKG git-tiny npm
+PKG git-tiny npm-node22
 
-CMD git clone https://github.com/gethomepage/homepage.git && \
+COPY files
+CMD export COREPACK_ENABLE_DOWNLOAD_PROMPT=0 && \
+    git clone https://github.com/gethomepage/homepage.git && \
     cd homepage && \
     git checkout tags/${version} && \
+    cp -a /files/package.json.patch . && \
+    git apply package.json.patch && \
     corepack enable && \
-    corepack prepare pnpm@latest --activate && \
+    corepack prepare pnpm@10.8.1 --activate && \
     pnpm install --frozen-lockfile --prefer-offline && \
     env NEXT_TELEMETRY_DISABLED=1 \
         NEXT_PUBLIC_VERSION=${version} \
@@ -25,5 +29,5 @@ CMD git clone https://github.com/gethomepage/homepage.git && \
     cp -a .next/standalone/ /homepage-files && \
     cp -a .next/static/ /homepage-files/.next/static && \
     rm -rf /homepage-files/config && \
-    tar --gzip -C / -cf /homepage-${version}.frontend.tar.gz homepage-files
-CMD --local-jaildir cp -a homepage-${version}.frontend.tar.gz "${output}"
+    tar --gzip -C / -cf /homepage-${version}.tar.gz homepage-files
+CMD --local-jaildir cp -a homepage-${version}.tar.gz "${output}"
