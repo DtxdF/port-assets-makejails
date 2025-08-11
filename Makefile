@@ -6,7 +6,8 @@ PORTS=	filebrowser \
 		tinyauth \
 		filepizza \
 		readur \
-		backrest
+		backrest \
+		github-release-monitor
 
 all: build
 

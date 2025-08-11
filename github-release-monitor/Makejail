@@ -1,0 +1,24 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+PKG git-tiny npm-node24
+
+CMD export NEXT_TELEMETRY_DISABLED=1 && \
+    git clone https://github.com/iamspido/github-release-monitor.git && \
+    cd github-release-monitor && \
+    git checkout tags/${version} && \
+    npm ci && \
+    npm run build && \
+    mkdir -p /github-release-monitor-files && \
+    cp -a .next/standalone/ /github-release-monitor-files && \
+    cp -a .next/static/ /github-release-monitor-files/.next/static && \
+    cp -a public /github-release-monitor-files && \
+    tar --gzip -C / -cf /github-release-monitor-${version}.tar.gz github-release-monitor-files
+CMD --local-jaildir cp -a github-release-monitor-${version}.tar.gz "${output}"
