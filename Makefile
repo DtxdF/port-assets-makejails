@@ -15,3 +15,8 @@ build:
 .for p in ${PORTS}
 	make -C ${p}
 .endfor
+
+show-version:
+.for p in ${PORTS}
+	@echo "${p}: `make -C ${p} -V VERSION`"
+.endfor
