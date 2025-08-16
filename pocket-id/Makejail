@@ -8,14 +8,16 @@ OPTION ip4_inherit
 OPTION ip6_inherit
 OPTION ephemeral
 
-PKG git-tiny npm
+PKG git-tiny npm-node22
 
-CMD git clone https://github.com/pocket-id/pocket-id.git && \
+CMD export COREPACK_ENABLE_DOWNLOAD_PROMPT=0 && \
+    git clone https://github.com/pocket-id/pocket-id.git && \
     cd pocket-id && \
     git checkout tags/${version} && \
     cd frontend && \
-    npm ci && \
-    env BUILD_OUTPUT_PATH=dist npm run build && \
+    corepack enable && \
+    pnpm --filter pocket-id-frontend install --frozen-lockfile && \
+    BUILD_OUTPUT_PATH=dist pnpm --filter pocket-id-frontend run build && \
     cp -a dist /pocket-id-frontend && \
     tar --gzip -C / -cf /pocket-id-${version}.frontend.tar.gz pocket-id-frontend
 CMD --local-jaildir cp -a pocket-id-${version}.frontend.tar.gz "${output}"
