@@ -7,7 +7,8 @@ PORTS=	filebrowser \
 		filepizza \
 		readur \
 		backrest \
-		github-release-monitor
+		github-release-monitor \
+		navidrome
 
 all: build
 
