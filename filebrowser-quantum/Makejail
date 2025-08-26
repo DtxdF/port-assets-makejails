@@ -1,0 +1,21 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+PKG git-tiny npm
+
+CMD git clone https://github.com/gtsteffaniak/filebrowser.git && \
+    cd filebrowser && \
+    git checkout tags/${version} && \
+    cd frontend && \
+    npm i && \
+    npm run build-docker && \
+    cp -a dist /filebrowser-quantum-frontend && \
+    tar --gzip -C / -cf /filebrowser-quantum-${version}.frontend.tar.gz filebrowser-quantum-frontend
+CMD --local-jaildir cp -a filebrowser-quantum-${version}.frontend.tar.gz "${output}"

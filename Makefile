@@ -8,7 +8,8 @@ PORTS=	filebrowser \
 		readur \
 		backrest \
 		github-release-monitor \
-		navidrome
+		navidrome \
+		filebrowser-quantum
 
 all: build
 
