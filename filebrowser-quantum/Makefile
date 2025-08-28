@@ -1,13 +1,26 @@
-JAIL?=		filebrowser-quantum-frontend
+JAIL?=		filebrowser-quantum-assets
 VERSION?=	v0.8.2-beta
 OUTPUT?=	${PWD}
 
 all: build stop
 
-build:
-	@appjail makejail -j "${JAIL}" -- \
-		--version "${VERSION}" \
-		--output "${OUTPUT}"
+build: build-frontend build-vendor
+
+build-frontend:
+	@appjail makejail \
+		-j "${JAIL}" \
+		-f Makejail.frontend \
+		-- \
+			--version "${VERSION}" \
+			--output "${OUTPUT}"
+
+build-vendor:
+	@appjail makejail \
+		-j "${JAIL}" \
+		-f Makejail.vendor \
+		-- \
+			--version "${VERSION}" \
+			--output "${OUTPUT}"
 
 stop:
 	@appjail stop -- "${JAIL}"
