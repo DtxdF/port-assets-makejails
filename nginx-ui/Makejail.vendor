@@ -1,0 +1,21 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+COPY usr
+
+PKG git-tiny go125
+
+CMD git clone https://github.com/0xJacky/nginx-ui.git && \
+    cd nginx-ui && \
+    git checkout tags/${version} && \
+    go125 mod vendor && \
+    cp -a vendor /nginx-ui-vendor && \
+    tar --gzip -C / -cf /nginx-ui-${version}.vendor.tar.gz nginx-ui-vendor
+CMD --local-jaildir cp -a nginx-ui-${version}.vendor.tar.gz "${output}"

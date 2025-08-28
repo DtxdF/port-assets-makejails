@@ -1,0 +1,25 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+COPY usr
+
+PKG git-tiny npm
+
+CMD git clone https://github.com/0xJacky/nginx-ui.git && \
+    cd nginx-ui && \
+    git checkout tags/${version} && \
+    cd app && \
+    corepack enable && \
+    npx update-browserslist-db < /dev/null && \
+    pnpm install && \
+    pnpm build && \
+    cp -a dist /nginx-ui-frontend && \
+    tar --gzip -C / -cf /nginx-ui-${version}.frontend.tar.gz nginx-ui-frontend
+CMD --local-jaildir cp -a nginx-ui-${version}.frontend.tar.gz "${output}"

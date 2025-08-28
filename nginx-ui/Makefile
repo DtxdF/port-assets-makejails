@@ -1,0 +1,26 @@
+JAIL?=		nginx-ui-assets
+VERSION?=	v2.1.17
+OUTPUT?=	${PWD}
+
+all: build stop
+
+build: build-frontend build-vendor
+
+build-frontend:
+	@appjail makejail \
+		-j "${JAIL}" \
+		-f Makejail.frontend \
+			-- \
+			--version "${VERSION}" \
+			--output "${OUTPUT}"
+
+build-vendor:
+	@appjail makejail \
+		-j "${JAIL}" \
+		-f Makejail.vendor \
+			-- \
+			--version "${VERSION}" \
+			--output "${OUTPUT}"
+
+stop:
+	@appjail stop -- "${JAIL}"

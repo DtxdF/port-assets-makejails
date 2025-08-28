@@ -9,7 +9,8 @@ PORTS=	filebrowser \
 		backrest \
 		github-release-monitor \
 		navidrome \
-		filebrowser-quantum
+		filebrowser-quantum \
+		nginx-ui
 
 all: build
 
