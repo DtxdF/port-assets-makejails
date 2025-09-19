@@ -1,0 +1,20 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+COPY usr
+
+PKG git-tiny go124
+
+CMD git clone --depth 1 --branch ${version} https://github.com/TwiN/gatus.git && \
+    cd gatus && \
+    go124 mod vendor && \
+    cp -a vendor /gatus-vendor && \
+    tar --gzip -C / -cf /gatus-${version}.vendor.tar.gz gatus-vendor
+CMD --local-jaildir cp -a gatus-${version}.vendor.tar.gz "${output}"

@@ -10,7 +10,8 @@ PORTS=	filebrowser \
 		github-release-monitor \
 		navidrome \
 		filebrowser-quantum \
-		nginx-ui
+		nginx-ui \
+		gatus
 
 all: build
 
