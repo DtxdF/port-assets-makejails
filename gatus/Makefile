@@ -1,5 +1,5 @@
 JAIL?=		gatus-assets
-VERSION?=	v5.24.0
+VERSION?=	v5.26.0
 OUTPUT?=	${PWD}
 
 all: build stop
