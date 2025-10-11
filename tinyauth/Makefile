@@ -1,5 +1,5 @@
 JAIL?=		tinyauth-frontend
-VERSION?=	v3.6.2
+VERSION?=	v4.0.0
 OUTPUT?=	${PWD}
 
 all: build stop
