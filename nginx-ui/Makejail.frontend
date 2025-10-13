@@ -21,5 +21,6 @@ CMD git clone https://github.com/0xJacky/nginx-ui.git && \
     pnpm install && \
     pnpm build && \
     cp -a dist /nginx-ui-frontend && \
+    tar -cf - dist | xz -9 -c > /nginx-ui-frontend/dist.tar.xz && \
     tar --gzip -C / -cf /nginx-ui-${version}.frontend.tar.gz nginx-ui-frontend
 CMD --local-jaildir cp -a nginx-ui-${version}.frontend.tar.gz "${output}"
