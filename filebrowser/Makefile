@@ -1,5 +1,5 @@
 JAIL?=		filebrowser-frontend
-VERSION?=	v2.44.0
+VERSION?=	v2.44.2
 OUTPUT?=	${PWD}
 
 all: build stop
