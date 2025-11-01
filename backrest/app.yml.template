@@ -8,10 +8,15 @@ deployIn:
     - desktop
 vmName: backrest
 makejail: 'gh+DtxdF/vm-makejail'
+overwrite: true
+build-arguments:
+  - is_public_vm: '1'
+poweroff: true
 options:
-  - fstab: '"/var/os-images/uploads" /vm/.img nullfs ro'
+  - fstab: '"/var/local-os" /vm/.img nullfs ro'
   - pkg: grub2-bhyve
   - pkg: qemu-tools
+  - ephemeral:
 template:
   loader: 'grub'
   cpu: '4'
@@ -24,10 +29,10 @@ template:
   uuid: !ENV '${INSTANCE_ID}'
 diskLayout:
   driver: 'ahci-hd'
-  size: '40G'
+  size: '10G'
   from:
     type: 'img'
-    imgFile: 'debian-13-genericcloud-amd64.qcow2'
+    imgFile: 'debian-13-generic-amd64-daily.qcow2'
 cloud-init:
   meta-data:
     instance-id: !ENV '${INSTANCE_ID}'
@@ -71,17 +76,15 @@ cloud-init:
 
           export HOME=/root
 
-          git clone https://github.com/garethgeorge/backrest.git &&
-          cd backrest &&
-          git checkout tags/%%VERSION%% &&
-          /usr/lib/go-1.24/bin/go mod tidy &&
-          corepack enable &&
-          env CI=true pnpm --prefix webui install &&
-          env BACKREST_BUILD_VERSION=%%VERSION%% /usr/lib/go-1.24/bin/go generate ./... &&
-          cp -a webui/dist /backrest-frontend &&
+          git clone https://github.com/garethgeorge/backrest.git
+          cd backrest
+          git checkout tags/%%VERSION%%
+          /usr/lib/go-1.24/bin/go mod tidy
+          corepack enable
+          env CI=true pnpm --prefix webui install
+          env BACKREST_BUILD_VERSION=%%VERSION%% /usr/lib/go-1.24/bin/go generate ./...
+          cp -a webui/dist /backrest-frontend
           tar --gzip -C / -cf /backrest-%%VERSION%%.frontend.tar.gz backrest-frontend
         permissions: '0555'
     runcmd:
-      - ['sh', '-c', 'curl -x socks5://10.0.0.50:9050 -fsSL https://tailscale.com/install.sh | sh']
-      - ['tailscale', 'up', !ENV '--auth-key=${TS_AUTH_KEY}']
       - ['/build.sh']

@@ -1,6 +1,11 @@
-VERSION?=	v1.9.2
+VERSION?=	v1.10.1
+OUTPUT?=	${PWD}
+WAIT?=		10
+ASSET=		backrest-${VERSION}.frontend.tar.gz
 
-all: build-env build apply
+.PHONY: all build-env build apply download
+
+all: build-env build apply ${ASSET}
 
 build-env:
 	@sops decrypt .enc.env > .env
@@ -10,6 +15,12 @@ build:
 
 apply: build
 	@overlord apply -f app.yml
+
+cancel: build
+	@overlord cancel -f app.yml
+
+${ASSET}: build-env
+	@env ASSET=${ASSET} OUTPUT=${OUTPUT} WAIT=${WAIT} ./wait-and-download.sh
 
 project-info:
 	@overlord get-info -f app.yml -t projects --filter-per-project
