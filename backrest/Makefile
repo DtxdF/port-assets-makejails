@@ -20,7 +20,7 @@ cancel: build
 	@overlord cancel -f app.yml
 
 ${ASSET}: build-env
-	@env ASSET=${ASSET} OUTPUT=${OUTPUT} WAIT=${WAIT} ./wait-and-download.sh
+	@env ASSET=${ASSET} OUTPUT=${OUTPUT} ./wait-and-download.sh
 
 project-info:
 	@overlord get-info -f app.yml -t projects --filter-per-project
