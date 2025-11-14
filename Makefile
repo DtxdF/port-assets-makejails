@@ -11,7 +11,8 @@ PORTS=	filebrowser \
 		navidrome \
 		filebrowser-quantum \
 		nginx-ui \
-		gatus
+		gatus \
+		gol
 
 all: build
 

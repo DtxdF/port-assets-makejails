@@ -1,0 +1,20 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+COPY usr
+
+PKG git-tiny go124
+
+CMD git clone --depth 1 --branch ${version} https://github.com/kevincobain2000/gol.git && \
+    cd gol && \
+    go124 mod vendor && \
+    cp -a vendor /gol-vendor && \
+    tar --gzip -C / -cf /gol-${version}.vendor.tar.gz gol-vendor
+CMD --local-jaildir cp -a gol-${version}.vendor.tar.gz "${output}"
