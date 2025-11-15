@@ -12,7 +12,8 @@ PORTS=	filebrowser \
 		filebrowser-quantum \
 		nginx-ui \
 		gatus \
-		gol
+		gol \
+		opkssh
 
 all: build
 

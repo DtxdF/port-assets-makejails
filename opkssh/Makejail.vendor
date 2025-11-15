@@ -1,0 +1,20 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+COPY usr
+
+PKG git-tiny go123
+
+CMD git clone --depth 1 --branch ${version} https://github.com/openpubkey/opkssh.git && \
+    cd opkssh && \
+    go123 mod vendor && \
+    cp -a vendor /opkssh-vendor && \
+    tar --gzip -C / -cf /opkssh-${version}.vendor.tar.gz opkssh-vendor
+CMD --local-jaildir cp -a opkssh-${version}.vendor.tar.gz "${output}"
