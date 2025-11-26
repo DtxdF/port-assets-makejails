@@ -15,8 +15,6 @@ CMD export COREPACK_ENABLE_DOWNLOAD_PROMPT=0 && \
     git clone https://github.com/gethomepage/homepage.git && \
     cd homepage && \
     git checkout tags/${version} && \
-    cp -a /files/package.json.patch . && \
-    git apply package.json.patch && \
     corepack enable && \
     corepack prepare pnpm@10.8.1 --activate && \
     pnpm install --frozen-lockfile --prefer-offline && \

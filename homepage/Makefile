@@ -1,5 +1,5 @@
 JAIL?=		homepage-frontend
-VERSION?=	v1.5.0
+VERSION?=	v1.7.0
 OUTPUT?=	${PWD}
 
 all: build stop
