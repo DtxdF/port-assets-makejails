@@ -10,15 +10,17 @@ OPTION ephemeral
 
 COPY usr
 
-PKG git-tiny npm
+PKG git-tiny npm-node25
 
 CMD git clone https://github.com/0xJacky/nginx-ui.git && \
     cd nginx-ui && \
     git checkout tags/${version} && \
     cd app && \
     corepack enable && \
-    npx update-browserslist-db < /dev/null && \
+    corepack prepare pnpm@latest --activate && \
     pnpm install && \
+    echo '{}' > package-lock.json && \
+    npx update-browserslist-db@latest < /dev/null && \
     pnpm build && \
     cp -a dist /nginx-ui-frontend && \
     tar -cf - dist | xz -9 -c > /nginx-ui-frontend/dist.tar.xz && \
