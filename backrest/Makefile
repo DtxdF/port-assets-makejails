@@ -1,6 +1,5 @@
 VERSION?=	v1.10.1
 OUTPUT?=	${PWD}
-WAIT?=		10
 ASSET=		backrest-${VERSION}.frontend.tar.gz
 
 .PHONY: all build-env build apply download
