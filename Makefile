@@ -13,7 +13,8 @@ PORTS=	filebrowser \
 		nginx-ui \
 		gatus \
 		gol \
-		opkssh
+		opkssh \
+		certwarden
 
 all: build
 

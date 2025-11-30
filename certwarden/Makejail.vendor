@@ -1,0 +1,21 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+COPY usr
+
+PKG git-tiny go125
+
+CMD git clone https://github.com/gregtwallace/certwarden-backend.git && \
+    cd certwarden-backend && \
+    git checkout tags/${version} && \
+    go125 mod vendor && \
+    cp -a vendor /certwarden-vendor && \
+    tar --gzip -C / -cf /certwarden-${version}.vendor.tar.gz certwarden-vendor
+CMD --local-jaildir cp -a certwarden-${version}.vendor.tar.gz "${output}"

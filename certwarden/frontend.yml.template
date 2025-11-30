@@ -1,0 +1,90 @@
+kind: vmJail
+datacenters:
+  main:
+    entrypoint: !ENV '${ENTRYPOINT}'
+    access_token: !ENV '${ACCESS_TOKEN}'
+deployIn:
+  labels:
+    - desktop
+vmName: !ENV '${VM}'
+makejail: 'gh+DtxdF/vm-makejail'
+overwrite: true
+build-arguments:
+  - is_public_vm: '1'
+poweroff: true
+options:
+  - fstab: '"/var/local-os" /vm/.img nullfs ro'
+  - pkg: grub2-bhyve
+  - pkg: qemu-tools
+  - ephemeral:
+template:
+  loader: 'grub'
+  cpu: '4'
+  memory: '2G'
+  network0_type: 'virtio-net'
+  network0_switch: 'public'
+  wired_memory: 'YES'
+  grub_run_partition: '1'
+  grub_run_dir: '/boot/grub'
+  uuid: !ENV '${INSTANCE_ID}'
+diskLayout:
+  driver: 'ahci-hd'
+  size: '10G'
+  from:
+    type: 'img'
+    imgFile: 'debian-13-generic-amd64-daily.qcow2'
+cloud-init:
+  meta-data:
+    instance-id: !ENV '${INSTANCE_ID}'
+    local-hostname: !ENV '${VM}'
+  network-config:
+    version: 2
+    ethernets:
+      id0:
+        match:
+            name: 'enp0s5'
+        addresses:
+          - 192.168.8.2/24
+        routes:
+            - to: default
+              via: 192.168.8.1
+        nameservers:
+          search: []
+          addresses: [172.0.0.1]
+  user-data:
+    resize_rootfs: True
+    manage_etc_hosts: localhost
+    user:
+        name: user
+        homedir: '/user'
+        ssh_authorized_keys:
+            - !ENV '${SSH_KEY}'
+        sudo: 'ALL=(ALL) NOPASSWD:ALL'
+    package_update: True
+    package_upgrade: True
+    packages:
+      - git
+    write_files:
+      - path: /build.sh
+        content: |
+          #!/bin/sh
+          
+          set -xe
+          set -o pipefail
+
+          export HOME=/root
+
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+          \. "$HOME/.nvm/nvm.sh"
+          nvm install 20
+
+          git clone https://github.com/gregtwallace/certwarden-frontend.git /src
+          cd /src
+          git checkout tags/%%VERSION%%
+          npm clean-install
+          npm run build
+          cp -a dist /certwarden-frontend
+          tar --gzip -C / -cf /certwarden-%%VERSION%%.frontend.tar.gz certwarden-frontend
+        permissions: '0555'
+    runcmd:
+      - ['/build.sh']
