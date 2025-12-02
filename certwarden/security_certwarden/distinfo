@@ -1,0 +1,9 @@
+TIMESTAMP = 1764631071
+SHA256 (certwarden-v0.28.0.frontend.tar.gz) = 9a5691cfd13045bbf834e9bd65e99fc1cb3485f3a72aa23873b7cbe3c7da2e57
+SIZE (certwarden-v0.28.0.frontend.tar.gz) = 558947
+SHA256 (certwarden-v0.28.0.vendor.tar.gz) = 064a5c4dbe95baf988ca0b62a5befd5cc2d0e6b9b5729600346c1ab9a511331d
+SIZE (certwarden-v0.28.0.vendor.tar.gz) = 15620929
+SHA256 (gregtwallace-certwarden-backend-v0.28.0_GH0.tar.gz) = d4526599215d4b9fbce0fe5f7a80584bb29b03939e11ccfdf3b6869915f06576
+SIZE (gregtwallace-certwarden-backend-v0.28.0_GH0.tar.gz) = 747158
+SHA256 (gregtwallace-certwarden-v0.28.0_GH0.tar.gz) = d9e1fb5e64ca01cccf9af6ab0c63f5a817840d0b8e4fd3f67620c9715d49a73b
+SIZE (gregtwallace-certwarden-v0.28.0_GH0.tar.gz) = 30088

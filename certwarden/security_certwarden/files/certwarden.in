@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# PROVIDE: certwarden
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+#
+# Configuration settings for Certwarden in /etc/rc.conf
+#
+# certwarden_enable (bool):       Enable Certwarden. (default=NO)
+# certwarden_runas (str):         User to run Certwarden as. (default=%%USER%%)
+
+. /etc/rc.subr
+
+name="certwarden"
+desc="Centralized ACME Client"
+rcvar="${name}_enable"
+
+load_rc_config $name
+
+: ${certwarden_enable:="NO"}
+: ${certwarden_runas:="%%USER%%"}
+
+certwarden_chdir="%%WWWDIR%%"
+pidfile="/var/run/certwarden.pid"
+procname="%%LOCALBASE%%/bin/certwarden"
+command="/usr/sbin/daemon"
+command_args="-u ${certwarden_runas} -p ${pidfile} -t \"${desc}\" -T certwarden ${procname}"
+
+run_rc_command "$1"

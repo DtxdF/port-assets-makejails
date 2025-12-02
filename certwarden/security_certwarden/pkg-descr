@@ -1,0 +1,9 @@
+Cert Warden (formerly LeGo CertHub) is a centralized certificate
+management and ACME client.
+
+Generally you set up the certificates you want on Cert Warden once
+and Cert Warden will automatically renew them on a regular basis.
+Clients that use the certificates fetch them from Cert Warden using
+a GET api call with an API key. This eliminates the intricacies of
+RFC 8555 for all of the certificate clients and replaces it with
+one standard secured GET call.
