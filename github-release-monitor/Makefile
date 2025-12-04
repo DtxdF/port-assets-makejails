@@ -1,5 +1,5 @@
 JAIL?=		github-release-monitor
-VERSION?=	v1.3.0
+VERSION?=	v1.4.0
 OUTPUT?=	${PWD}
 
 all: build stop
