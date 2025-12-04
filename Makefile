@@ -14,7 +14,8 @@ PORTS=	filebrowser \
 		gatus \
 		gol \
 		opkssh \
-		certwarden
+		certwarden \
+		runme
 
 all: build
 

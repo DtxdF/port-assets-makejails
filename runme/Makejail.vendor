@@ -1,0 +1,20 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+COPY usr
+
+PKG git-tiny go125
+
+CMD git clone --depth 1 --branch ${version} https://github.com/runmedev/runme.git && \
+    cd runme && \
+    go125 mod vendor && \
+    cp -a vendor /runme-vendor && \
+    tar --gzip -C / -cf /runme-${version}.vendor.tar.gz runme-vendor
+CMD --local-jaildir cp -a runme-${version}.vendor.tar.gz "${output}"
