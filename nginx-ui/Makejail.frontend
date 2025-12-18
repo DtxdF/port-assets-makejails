@@ -12,7 +12,8 @@ COPY usr
 
 PKG git-tiny npm-node25
 
-CMD git clone https://github.com/0xJacky/nginx-ui.git && \
+CMD export COREPACK_ENABLE_DOWNLOAD_PROMPT=0 && \
+    git clone https://github.com/0xJacky/nginx-ui.git && \
     cd nginx-ui && \
     git checkout tags/${version} && \
     cd app && \
