@@ -1,5 +1,5 @@
 JAIL?=		homebox-frontend
-VERSION?=	v0.21.0
+VERSION?=	v0.22.3
 OUTPUT?=	${PWD}
 
 all: build stop
