@@ -14,18 +14,15 @@ build-arguments:
 poweroff: true
 options:
   - fstab: '"/var/local-os" /vm/.img nullfs ro'
-  - pkg: grub2-bhyve
+  - fstab: '/var/cache/pkg /var/cache/pkg'
   - pkg: qemu-tools
-  - ephemeral:
 template:
-  loader: 'grub'
+  loader: 'uefi'
   cpu: '4'
   memory: '2G'
   network0_type: 'virtio-net'
   network0_switch: 'public'
   wired_memory: 'YES'
-  grub_run_partition: '1'
-  grub_run_dir: '/boot/grub'
   uuid: !ENV '${INSTANCE_ID}'
 diskLayout:
   driver: 'ahci-hd'
@@ -36,13 +33,13 @@ diskLayout:
 cloud-init:
   meta-data:
     instance-id: !ENV '${INSTANCE_ID}'
-    local-hostname: backrest.lan
+    local-hostname: backrest
   network-config:
     version: 2
     ethernets:
       id0:
         match:
-            name: 'enp0s5'
+            name: 'enp0s6'
         addresses:
           - 192.168.8.2/24
         routes:
