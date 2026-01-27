@@ -15,7 +15,8 @@ PORTS=	filebrowser \
 		gol \
 		opkssh \
 		certwarden \
-		runme
+		runme \
+		flatnotes
 
 all: build
 

@@ -1,0 +1,23 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+PKG git-tiny npm-node20
+
+CMD git clone https://github.com/dullage/flatnotes.git && \
+    cd flatnotes && \
+    git checkout tags/${version} && \
+    npm ci && \
+    npx update-browserslist-db@latest < /dev/null && \
+    npm uninstall sass sass-embedded && \
+    npm install -D sass@latest && \
+    npm run build && \
+    cp -a client/dist /flatnotes-frontend && \
+    tar --gzip -C / -cf /flatnotes-${version}.frontend.tar.gz flatnotes-frontend
+CMD --local-jaildir cp -a flatnotes-${version}.frontend.tar.gz "${output}"
