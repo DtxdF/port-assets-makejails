@@ -8,6 +8,8 @@ OPTION ip4_inherit
 OPTION ip6_inherit
 OPTION ephemeral
 
+COPY usr
+
 PKG git-tiny npm
 
 CMD git clone https://github.com/navidrome/navidrome.git && \
