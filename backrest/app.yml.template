@@ -11,11 +11,11 @@ makejail: 'gh+DtxdF/vm-makejail'
 overwrite: true
 build-arguments:
   - is_public_vm: '1'
+  - with_qemu_tools: '1'
 poweroff: true
 options:
   - fstab: '"/var/local-os" /vm/.img nullfs ro'
   - fstab: '/var/cache/pkg /var/cache/pkg'
-  - pkg: qemu-tools
   - ephemeral:
 template:
   loader: 'uefi'
