@@ -16,6 +16,7 @@ options:
   - fstab: '"/var/local-os" /vm/.img nullfs ro'
   - fstab: '/var/cache/pkg /var/cache/pkg'
   - pkg: qemu-tools
+  - ephemeral:
 template:
   loader: 'uefi'
   cpu: '4'

@@ -1,8 +1,8 @@
-VERSION?=	v1.11.1
+VERSION?=	v1.11.2
 OUTPUT?=	${PWD}
 ASSET=		backrest-${VERSION}.frontend.tar.gz
 
-.PHONY: all build-env build apply download
+.PHONY: all build-env build apply
 
 all: build-env build apply ${ASSET}
 
