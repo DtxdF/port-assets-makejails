@@ -1,4 +1,4 @@
-VERSION?=	v1.11.2
+VERSION?=	v1.12.0
 OUTPUT?=	${PWD}
 ASSET=		backrest-${VERSION}.frontend.tar.gz
 
