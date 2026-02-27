@@ -1,13 +1,31 @@
-JAIL?=		homepage-frontend
-VERSION?=	v1.8.0
+VERSION?=	v1.10.1
 OUTPUT?=	${PWD}
+ASSET=		homepage-${VERSION}.tar.gz
 
-all: build stop
+.PHONY: all build-env build apply
+
+all: build-env build apply ${ASSET}
+
+build-env:
+	@sops decrypt .enc.env > .env
 
 build:
-	@appjail makejail -j "${JAIL}" -- \
-		--version "${VERSION}" \
-		--output "${OUTPUT}"
+	@cat app.yml.template | sed -Ee 's/%%VERSION%%/${VERSION}/g' > app.yml
 
-stop:
-	@appjail stop -- "${JAIL}"
+apply: build
+	@overlord apply -f app.yml
+
+cancel: build
+	@overlord cancel -f app.yml
+
+${ASSET}: build-env
+	@env ASSET=${ASSET} OUTPUT=${OUTPUT} ./wait-and-download.sh
+
+project-info:
+	@overlord get-info -f app.yml -t projects --filter-per-project
+
+vm-info:
+	@overlord get-info -f app.yml -t vm --filter-per-project
+
+clean: build
+	@overlord destroy -Ff app.yml
