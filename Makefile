@@ -16,7 +16,8 @@ PORTS=	filebrowser \
 		opkssh \
 		certwarden \
 		runme \
-		flatnotes
+		flatnotes \
+		yubal
 
 all: build
 

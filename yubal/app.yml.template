@@ -1,0 +1,88 @@
+kind: vmJail
+datacenters:
+  main:
+    entrypoint: !ENV '${ENTRYPOINT}'
+    access_token: !ENV '${ACCESS_TOKEN}'
+deployIn:
+  labels:
+    - desktop
+vmName: yubal
+makejail: 'gh+DtxdF/vm-makejail'
+overwrite: true
+build-arguments:
+  - is_public_vm: '1'
+  - with_qemu_tools: '1'
+poweroff: true
+options:
+  - fstab: '"/var/local-os" /vm/.img nullfs ro'
+  - fstab: '/var/cache/pkg /var/cache/pkg'
+  - ephemeral:
+template:
+  loader: 'uefi'
+  cpu: '4'
+  memory: '2G'
+  network0_type: 'virtio-net'
+  network0_switch: 'public'
+  wired_memory: 'YES'
+  uuid: !ENV '${INSTANCE_ID}'
+diskLayout:
+  driver: 'ahci-hd'
+  size: '10G'
+  from:
+    type: 'img'
+    imgFile: 'debian-13-generic-amd64-daily.qcow2'
+cloud-init:
+  meta-data:
+    instance-id: !ENV '${INSTANCE_ID}'
+    local-hostname: yubal
+  network-config:
+    version: 2
+    ethernets:
+      id0:
+        match:
+            name: 'enp0s6'
+        addresses:
+          - 192.168.8.2/24
+        routes:
+            - to: default
+              via: 192.168.8.1
+        nameservers:
+          search: []
+          addresses: [172.0.0.1]
+  user-data:
+    resize_rootfs: True
+    manage_etc_hosts: localhost
+    user:
+        name: user
+        homedir: '/user'
+        ssh_authorized_keys:
+            - !ENV '${SSH_KEY}'
+        sudo: 'ALL=(ALL) NOPASSWD:ALL'
+    package_update: True
+    package_upgrade: True
+    packages:
+      - git
+      - unzip
+    write_files:
+      - path: /build.sh
+        content: |
+          #!/bin/sh
+          
+          set -xe
+          set -o pipefail
+
+          export HOME=/root
+          curl -fsSL https://bun.com/install | bash
+          git clone https://github.com/guillevc/yubal.git
+          cd yubal/web
+          git checkout tags/%%VERSION%%
+          ~/.bun/bin/bun install --frozen-lockfile
+          env VITE_VERSION=%%VERSION%% \
+              VITE_COMMIT_SHA=`git rev-parse HEAD` \
+              VITE_IS_RELEASE=true \
+                ~/.bun/bin/bun run build
+          cp -a dist /yubal-frontend
+          tar --gzip -C / -cf /yubal-%%VERSION%%.frontend.tar.gz yubal-frontend
+        permissions: '0555'
+    runcmd:
+      - ['/build.sh']
