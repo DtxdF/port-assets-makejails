@@ -1,5 +1,5 @@
 JAIL?=		readur-frontend
-VERSION?=	v2.7.7
+VERSION?=	v2.7.8
 OUTPUT?=	${PWD}
 
 all: build stop
