@@ -1,31 +1,41 @@
 VERSION?=	v5.0.4
 OUTPUT?=	${PWD}
-ASSET=		tinyauth-${VERSION}.frontend.tar.gz
+FRONTEND_ASSET=		tinyauth-${VERSION}.frontend.tar.gz
+JAIL?=		tinyauth-assets
 
-.PHONY: all build-env build apply
-
-all: build-env build apply ${ASSET}
+.PHONY: build-env build-frontend build-vendor
 
 build-env:
 	@sops decrypt .enc.env > .env
 
-build:
-	@cat app.yml.template | sed -Ee 's/%%VERSION%%/${VERSION}/g' > app.yml
+build-template:
+	@cat frontend.yml.template | sed -Ee 's/%%VERSION%%/${VERSION}/g' > frontend.yml
 
-apply: build
-	@overlord apply -f app.yml
+build-frontend: build-env build-template
+	@env JAIL=${JAIL} overlord apply -f frontend.yml
 
-cancel: build
-	@overlord cancel -f app.yml
+build-vendor:
+	@appjail makejail \
+		-j "${JAIL}" \
+		-f Makejail.vendor \
+			-- \
+			--version "${VERSION}" \
+			--output "${OUTPUT}"
 
-${ASSET}: build-env
-	@env ASSET=${ASSET} OUTPUT=${OUTPUT} ./wait-and-download.sh
+cancel: build-env build-template
+	@env JAIL=${JAIL} overlord cancel -f frontend.yml
 
-project-info:
-	@overlord get-info -f app.yml -t projects --filter-per-project
+download-frontend: build-env
+	@env ASSET=${FRONTEND_ASSET} OUTPUT=${OUTPUT} ./wait-and-download.sh
 
-vm-info:
-	@overlord get-info -f app.yml -t vm --filter-per-project
+project-info: build-env build-template
+	@env JAIL=${JAIL} overlord get-info -f frontend.yml -t projects --filter-per-project
 
-clean: build
-	@overlord destroy -Ff app.yml
+vm-info: build-env build-template
+	@env JAIL=${JAIL} overlord get-info -f frontend.yml -t vm --filter-per-project
+
+clean-frontend: build-env build-template
+	@env JAIL=${JAIL} overlord destroy -Ff frontend.yml
+
+clean-vendor:
+	@appjail stop -- "${JAIL}"

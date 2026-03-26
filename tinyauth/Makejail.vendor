@@ -1,0 +1,21 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+COPY usr
+
+PKG git-tiny go125
+
+CMD git clone --recurse-submodules https://github.com/steveiliop56/tinyauth.git && \
+    cd tinyauth && \
+    git checkout tags/${version} && \
+    go125 mod vendor && \
+    cp -a vendor /tinyauth-vendor && \
+    tar --gzip -C / -cf /tinyauth-${version}.vendor.tar.gz tinyauth-vendor
+CMD --local-jaildir cp -a tinyauth-${version}.vendor.tar.gz "${output}"

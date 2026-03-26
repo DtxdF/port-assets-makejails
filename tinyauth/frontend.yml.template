@@ -6,7 +6,7 @@ datacenters:
 deployIn:
   labels:
     - desktop
-vmName: tinyauth
+vmName: !ENV '${JAIL}'
 makejail: 'gh+DtxdF/vm-makejail'
 overwrite: true
 build-arguments:
@@ -34,7 +34,7 @@ diskLayout:
 cloud-init:
   meta-data:
     instance-id: !ENV '${INSTANCE_ID}'
-    local-hostname: tinyauth
+    local-hostname: !ENV '${VM_HOSTNAME}'
   network-config:
     version: 2
     ethernets:
