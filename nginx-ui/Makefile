@@ -1,5 +1,5 @@
 JAIL?=		nginx-ui-assets
-VERSION?=	v2.3.3
+VERSION?=	v2.3.5
 OUTPUT?=	${PWD}
 
 all: build stop
