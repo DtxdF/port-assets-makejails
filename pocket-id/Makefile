@@ -1,5 +1,5 @@
 JAIL?=		pocket-id-frontend
-VERSION?=	v2.4.0
+VERSION?=	v2.5.0
 OUTPUT?=	${PWD}
 
 all: build stop

@@ -8,7 +8,7 @@ OPTION ip4_inherit
 OPTION ip6_inherit
 OPTION ephemeral
 
-PKG git-tiny npm-node22
+PKG git-tiny npm-node24
 
 CMD export COREPACK_ENABLE_DOWNLOAD_PROMPT=0 && \
     git clone https://github.com/pocket-id/pocket-id.git && \
