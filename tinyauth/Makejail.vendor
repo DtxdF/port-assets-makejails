@@ -10,12 +10,12 @@ OPTION ephemeral
 
 COPY usr
 
-PKG git-tiny go125
+PKG git-tiny go126
 
 CMD git clone --recurse-submodules https://github.com/steveiliop56/tinyauth.git && \
     cd tinyauth && \
     git checkout tags/${version} && \
-    go125 mod vendor && \
+    go126 mod vendor && \
     cp -a vendor /tinyauth-vendor && \
     tar --gzip -C / -cf /tinyauth-${version}.vendor.tar.gz tinyauth-vendor
 CMD --local-jaildir cp -a tinyauth-${version}.vendor.tar.gz "${output}"

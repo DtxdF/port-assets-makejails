@@ -17,6 +17,8 @@ options:
   - fstab: '"/var/local-os" /vm/.img nullfs ro'
   - fstab: '/var/cache/pkg /var/cache/pkg'
   - ephemeral:
+  - label: 'security-group:1'
+  - label: 'security-group.rules.allow-dns:pass on ajnet proto { tcp, udp } to 172.16.0.1/32 port 53'
 template:
   loader: 'uefi'
   cpu: '4'
@@ -48,7 +50,7 @@ cloud-init:
               via: 192.168.8.1
         nameservers:
           search: []
-          addresses: [172.0.0.1]
+          addresses: [172.16.0.1]
   user-data:
     resize_rootfs: True
     manage_etc_hosts: localhost
