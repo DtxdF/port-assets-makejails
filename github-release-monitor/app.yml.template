@@ -1,0 +1,95 @@
+kind: vmJail
+datacenters:
+  main:
+    entrypoint: !ENV '${ENTRYPOINT}'
+    access_token: !ENV '${ACCESS_TOKEN}'
+deployIn:
+  labels:
+    - desktop
+vmName: github-release-monitor
+makejail: 'gh+DtxdF/vm-makejail'
+overwrite: true
+build-arguments:
+  - is_public_vm: '1'
+  - with_qemu_tools: '1'
+poweroff: true
+options:
+  - fstab: '"/var/local-os" /vm/.img nullfs ro'
+  - fstab: '/var/cache/pkg /var/cache/pkg'
+  - ephemeral:
+  - label: 'security-group:1'
+  - label: 'security-group.tables.allow-dns:allow-dns'
+template:
+  loader: 'uefi'
+  cpu: '4'
+  memory: '2G'
+  network0_type: 'virtio-net'
+  network0_switch: 'public'
+  wired_memory: 'YES'
+  uuid: !ENV '${INSTANCE_ID}'
+diskLayout:
+  driver: 'ahci-hd'
+  size: '10G'
+  from:
+    type: 'img'
+    imgFile: 'debian-13-generic-amd64-daily.qcow2'
+cloud-init:
+  meta-data:
+    instance-id: !ENV '${INSTANCE_ID}'
+    local-hostname: github-release-monitor
+  network-config:
+    version: 2
+    ethernets:
+      id0:
+        match:
+            name: 'enp0s6'
+        addresses:
+          - 192.168.8.2/24
+        routes:
+            - to: default
+              via: 192.168.8.1
+        nameservers:
+          search: []
+          addresses: [172.16.0.1]
+  user-data:
+    resize_rootfs: True
+    manage_etc_hosts: localhost
+    user:
+        name: user
+        homedir: '/user'
+        ssh_authorized_keys:
+            - !ENV '${SSH_KEY}'
+        sudo: 'ALL=(ALL) NOPASSWD:ALL'
+    package_update: True
+    package_upgrade: True
+    packages:
+      - git
+    write_files:
+      - path: /build.sh
+        content: |
+          #!/bin/sh
+          
+          set -xe
+          set -o pipefail
+
+          version="%%VERSION%%"
+
+          export HOME=/root
+          export NEXT_TELEMETRY_DISABLED=1
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+          \. "$HOME/.nvm/nvm.sh"
+          nvm install 24
+          git clone https://github.com/iamspido/github-release-monitor.git
+          cd github-release-monitor
+          git checkout tags/${version}
+          npm ci
+          BETTER_AUTH_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \
+          BETTER_AUTH_URL=http://localhost:3000 \
+            npm run build
+          cp -a .next/standalone /github-release-monitor-files
+          cp -a .next/static /github-release-monitor-files/.next
+          cp -a public /github-release-monitor-files
+          tar --gzip -C / -cf /github-release-monitor-${version}.tar.gz github-release-monitor-files
+        permissions: '0555'
+    runcmd:
+      - ['/build.sh']
