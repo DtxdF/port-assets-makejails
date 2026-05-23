@@ -10,11 +10,11 @@ OPTION ephemeral
 
 COPY usr
 
-PKG git-tiny go124
+PKG git-tiny go126
 
 CMD git clone --depth 1 --branch ${version} https://github.com/TwiN/gatus.git && \
     cd gatus && \
-    go124 mod vendor && \
+    go126 mod vendor && \
     cp -a vendor /gatus-vendor && \
     tar --gzip -C / -cf /gatus-${version}.vendor.tar.gz gatus-vendor
 CMD --local-jaildir cp -a gatus-${version}.vendor.tar.gz "${output}"
