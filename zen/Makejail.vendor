@@ -1,0 +1,21 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+COPY usr
+
+PKG git-tiny go125
+
+CMD git clone https://github.com/sheshbabu/zen.git && \
+    cd zen && \
+    git checkout tags/${version} && \
+    go125 mod vendor && \
+    cp -a vendor /zen-vendor && \
+    tar --gzip -C / -cf /zen-${version}.vendor.tar.gz zen-vendor
+CMD --local-jaildir cp -a zen-${version}.vendor.tar.gz "${output}"

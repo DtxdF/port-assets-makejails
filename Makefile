@@ -17,7 +17,8 @@ PORTS=	filebrowser \
 		certwarden \
 		runme \
 		flatnotes \
-		yubal
+		yubal \
+		zen
 
 all: build
 

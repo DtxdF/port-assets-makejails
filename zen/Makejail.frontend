@@ -1,0 +1,21 @@
+ARG version
+ARG output
+
+OPTION start
+OPTION overwrite=force
+OPTION alias
+OPTION ip4_inherit
+OPTION ip6_inherit
+OPTION ephemeral
+
+COPY usr
+
+PKG git-tiny esbuild
+
+CMD git clone https://github.com/sheshbabu/zen.git && \
+    cd zen && \
+    git checkout tags/${version} && \
+    esbuild index.js --bundle --minify --format=esm --outfile=assets/bundle.js --loader:.js=jsx --jsx-factory=h --jsx-fragment=Fragment && \
+    cp -a assets /zen-frontend && \
+    tar --gzip -C / -cf /zen-${version}.frontend.tar.gz zen-frontend
+CMD --local-jaildir cp -a zen-${version}.frontend.tar.gz "${output}"
