@@ -1,4 +1,5 @@
 ARG version
+ARG extra
 ARG output
 
 OPTION start
@@ -14,8 +15,8 @@ PKG git-tiny esbuild
 
 CMD git clone https://github.com/sheshbabu/zen.git && \
     cd zen && \
-    git checkout tags/${version} && \
+    git checkout ${version} && \
     esbuild index.js --bundle --minify --format=esm --outfile=assets/bundle.js --loader:.js=jsx --jsx-factory=h --jsx-fragment=Fragment && \
     cp -a assets /zen-frontend && \
-    tar --gzip -C / -cf /zen-${version}.frontend.tar.gz zen-frontend
-CMD --local-jaildir cp -a zen-${version}.frontend.tar.gz "${output}"
+    tar --gzip -C / -cf /zen-${extra}-${version}.frontend.tar.gz zen-frontend
+CMD --local-jaildir cp -a zen-${extra}-${version}.frontend.tar.gz "${output}"

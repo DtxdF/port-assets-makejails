@@ -1,5 +1,6 @@
 JAIL?=		zen-assets
-VERSION?=	1.5.0
+VERSION?=	c8e14d70de7de631cd9d4cda55daccf227283d92
+EXTRA?=		1.5.0.20260429
 OUTPUT?=	${PWD}
 
 all: build stop
@@ -12,6 +13,7 @@ build-frontend:
 		-f Makejail.frontend \
 		-- \
 			--version "${VERSION}" \
+			--extra "${EXTRA}" \
 			--output "${OUTPUT}"
 
 build-vendor:
@@ -20,6 +22,7 @@ build-vendor:
 		-f Makejail.vendor \
 		-- \
 			--version "${VERSION}" \
+			--extra "${EXTRA}" \
 			--output "${OUTPUT}"
 
 stop:
