@@ -32,7 +32,7 @@ diskLayout:
   size: '10G'
   from:
     type: 'img'
-    imgFile: 'debian-13-generic-amd64-daily.qcow2'
+    imgFile: 'debian-13-backports-generic-amd64.qcow2'
 cloud-init:
   meta-data:
     instance-id: !ENV '${INSTANCE_ID}'
@@ -64,8 +64,6 @@ cloud-init:
     package_upgrade: True
     packages:
       - git
-      - golang-go
-      - npm
     write_files:
       - path: /build.sh
         content: |
@@ -74,15 +72,28 @@ cloud-init:
           set -xe
           set -o pipefail
 
+          version="%%VERSION%%"
+          node_version="26"
+          go_version="1.25.12"
+
+          export SHELL=/bin/bash
           export HOME=/root
+          curl -Lo- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+          \. "$HOME/.nvm/nvm.sh"
+          nvm install ${node_version}
+
+          curl -Lo- https://go.dev/dl/go${go_version}.linux-amd64.tar.gz | tar -C /usr/local -xzf -
+          export PATH=$PATH:/usr/local/go/bin
+
+          #curl -fsSL https://get.pnpm.io/install.sh | sh -
+          #export PATH=$PATH:/root/.local/share/pnpm/bin
 
           git clone https://github.com/garethgeorge/backrest.git
           cd backrest
-          git checkout tags/%%VERSION%%
-          /usr/lib/go-1.24/bin/go mod tidy
-          corepack enable
-          env CI=true pnpm --prefix webui install
-          env BACKREST_BUILD_VERSION=%%VERSION%% /usr/lib/go-1.24/bin/go generate ./...
+          git checkout tags/${version}
+          go mod tidy
+          (cd webui && npm install)
+          env BACKREST_BUILD_VERSION=%%VERSION%% go generate ./...
           cp -a webui/dist /backrest-frontend
           tar --gzip -C / -cf /backrest-%%VERSION%%.frontend.tar.gz backrest-frontend
         permissions: '0555'
