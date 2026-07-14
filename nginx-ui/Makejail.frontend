@@ -10,7 +10,7 @@ OPTION ephemeral
 
 COPY usr
 
-PKG git-tiny npm-node25
+PKG git-tiny npm-node26
 
 CMD export COREPACK_ENABLE_DOWNLOAD_PROMPT=0 && \
     git clone https://github.com/0xJacky/nginx-ui.git && \
