@@ -1,5 +1,5 @@
 JAIL?=		filebrowser-quantum-assets
-VERSION?=	v1.4.0-stable
+VERSION?=	v1.5.0-stable
 OUTPUT?=	${PWD}
 
 all: build stop
