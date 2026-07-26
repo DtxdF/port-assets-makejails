@@ -1,4 +1,4 @@
-VERSION?=	v5.0.7
+VERSION?=	v5.1.2
 OUTPUT?=	${PWD}
 FRONTEND_ASSET=		tinyauth-${VERSION}.frontend.tar.gz
 JAIL?=		tinyauth-assets
