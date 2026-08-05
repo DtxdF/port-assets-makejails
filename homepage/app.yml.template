@@ -32,7 +32,7 @@ diskLayout:
   size: '10G'
   from:
     type: 'img'
-    imgFile: 'debian-13-generic-amd64-daily.qcow2'
+    imgFile: 'debian-13-backports-generic-amd64.qcow2'
 cloud-init:
   meta-data:
     instance-id: !ENV '${INSTANCE_ID}'
@@ -64,7 +64,6 @@ cloud-init:
     package_upgrade: True
     packages:
       - git
-      - npm
     write_files:
       - path: /build.sh
         content: |
@@ -73,16 +72,25 @@ cloud-init:
           set -xe
           set -o pipefail
 
-          export HOME=/root && \
+          version="%%VERSION%%"
+          node_version="22"
+
+          export SHELL=/bin/bash
+          export HOME=/root
+
+          curl -Lo- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+          \. "$HOME/.nvm/nvm.sh"
+          nvm install ${node_version}
+
           export COREPACK_ENABLE_DOWNLOAD_PROMPT=0 && \
           git clone https://github.com/gethomepage/homepage.git && \
           cd homepage && \
-          git checkout tags/%%VERSION%% && \
+          git checkout tags/${version} && \
           corepack enable && \
           corepack prepare pnpm@latest --activate && \
           pnpm install --frozen-lockfile --prefer-offline && \
           env NEXT_TELEMETRY_DISABLED=1 \
-              NEXT_PUBLIC_VERSION=%%VERSION%% \
+              NEXT_PUBLIC_VERSION=${version} \
               NEXT_PUBLIC_REVISION=`git rev-parse HEAD` \
                 pnpm run build && \
           mkdir -p /homepage-files && \
@@ -90,7 +98,7 @@ cloud-init:
           cp -a .next/standalone/. /homepage-files && \
           cp -a .next/static/. /homepage-files/.next/static && \
           rm -rf /homepage-files/config && \
-          tar --gzip -C / -cf /homepage-%%VERSION%%.tar.gz homepage-files
+          tar --gzip -C / -cf /homepage-${version}.tar.gz homepage-files
         permissions: '0555'
     runcmd:
       - ['/build.sh']

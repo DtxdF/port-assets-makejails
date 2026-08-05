@@ -1,4 +1,4 @@
-VERSION?=	v1.12.3
+VERSION?=	v1.13.2
 OUTPUT?=	${PWD}
 ASSET=		homepage-${VERSION}.tar.gz
 

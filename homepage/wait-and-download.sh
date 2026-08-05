@@ -10,6 +10,7 @@ OUTPUT="${OUTPUT:-${PWD}}"
 test -n "${ASSET}" || exit $?
 
 waitforssh -T "test -f /${ASSET}" -- "user@${BACKREST_HOSTNAME}" &&
+    sleep 5 &&
     scp -o LogLevel=VERBOSE \
         -o StrictHostKeyChecking=no \
         -o UserKnownHostsFile=/dev/null \
