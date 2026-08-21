@@ -9,7 +9,8 @@ OUTPUT="${OUTPUT:-${PWD}}"
 
 test -n "${ASSET}" || exit $?
 
-waitforssh -T "test -f /${ASSET}" -- "user@${VM_HOSTNAME}" &&
+waitforssh -T "test -s /${ASSET}" -- "user@${VM_HOSTNAME}" &&
+    sleep 5 &&
     scp -o LogLevel=VERBOSE \
         -o StrictHostKeyChecking=no \
         -o UserKnownHostsFile=/dev/null \

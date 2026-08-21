@@ -1,4 +1,4 @@
-VERSION?=	v0.9.1
+VERSION?=	v0.10.0
 OUTPUT?=	${PWD}
 ASSET=		yubal-${VERSION}.frontend.tar.gz
 

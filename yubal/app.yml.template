@@ -32,7 +32,7 @@ diskLayout:
   size: '10G'
   from:
     type: 'img'
-    imgFile: 'debian-13-generic-amd64-daily.qcow2'
+    imgFile: 'debian-13-backports-generic-amd64.qcow2'
 cloud-init:
   meta-data:
     instance-id: !ENV '${INSTANCE_ID}'
