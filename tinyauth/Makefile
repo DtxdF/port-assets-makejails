@@ -1,41 +1,65 @@
-VERSION?=	v5.1.2
+NAME?=		tinyauth-assets
+VERSION?=	v5.1.3
 OUTPUT?=	${PWD}
-FRONTEND_ASSET=		tinyauth-${VERSION}.frontend.tar.gz
-JAIL?=		tinyauth-assets
+INSTANCE_ID!=	uuidgen -r
+ASSET=		tinyauth-${VERSION}.frontend.tar.gz
 
-.PHONY: build-env build-frontend build-vendor
+.PHONY: all
+all: build-frontend build-vendor
 
+.PHONY: build-frontend
+build-frontend: build-env app.yml
+	@env NAME=${NAME} \
+	     INSTANCE_ID=${INSTANCE_ID} \
+	         overlord apply -f app.yml
+	@make ${ASSET}
+	@make clean-frontend
+
+.PHONY: cancel-frontend
+cancel-frontend: build-env app.yml
+	@env NAME=${NAME} \
+	     INSTANCE_ID=${INSTANCE_ID} \
+	         overlord cancel -f app.yml
+
+.PHONY: app.yml
+app.yml:
+	@cat build.sh | sed -Ee 's/%%VERSION%%/'${VERSION}'/' | yq '.cloud-init.user-data.write_files[0].content = load_str("/dev/stdin")' ../app.yml.template > app.yml
+
+${ASSET}:
+	@env OUTPUT=${OUTPUT} \
+	     ASSET=${ASSET} \
+	     VM_HOSTNAME=${NAME} \
+	         ../wait-and-download.sh
+
+.PHONY: clean-frontend
+clean-frontend: build-env app.yml
+	@env NAME=${NAME} \
+	     INSTANCE_ID=${INSTANCE_ID} \
+		     overlord destroy -Ff app.yml
+
+.PHONY: frontend-status
+frontend-status: build-env app.yml
+	@echo "===> Project information:"
+	@env NAME=${NAME} \
+	     INSTANCE_ID=${INSTANCE_ID} \
+		     overlord get-info -f app.yml -t projects --filter-per-project
+	@echo "===> VM information:"
+	@env NAME=${NAME} \
+	     INSTANCE_ID=${INSTANCE_ID} \
+		     overlord get-info -f app.yml -t vm --filter-per-project
+
+.PHONY: build-env
 build-env:
-	@sops decrypt .enc.env > .env
+	@sops decrypt ../.enc.env > .env
 
-build-template:
-	@cat frontend.yml.template | sed -Ee 's/%%VERSION%%/${VERSION}/g' > frontend.yml
-
-build-frontend: build-env build-template
-	@env JAIL=${JAIL} overlord apply -f frontend.yml
-
+.PHONY: build-vendor
 build-vendor:
 	@appjail makejail \
-		-j "${JAIL}" \
-		-f Makejail.vendor \
-			-- \
-			--version "${VERSION}" \
-			--output "${OUTPUT}"
+	    -j "${NAME}" -f Makejail.vendor -- \
+	    --version "${VERSION}" \
+	    --output "${OUTPUT}"
+	@make clean-vendor
 
-cancel: build-env build-template
-	@env JAIL=${JAIL} overlord cancel -f frontend.yml
-
-download-frontend: build-env
-	@env ASSET=${FRONTEND_ASSET} OUTPUT=${OUTPUT} ./wait-and-download.sh
-
-project-info: build-env build-template
-	@env JAIL=${JAIL} overlord get-info -f frontend.yml -t projects --filter-per-project
-
-vm-info: build-env build-template
-	@env JAIL=${JAIL} overlord get-info -f frontend.yml -t vm --filter-per-project
-
-clean-frontend: build-env build-template
-	@env JAIL=${JAIL} overlord destroy -Ff frontend.yml
-
+.PHONY: clean-vendor
 clean-vendor:
-	@appjail stop -- "${JAIL}"
+	@appjail stop -- "${NAME}"
