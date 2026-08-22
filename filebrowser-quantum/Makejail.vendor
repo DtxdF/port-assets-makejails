@@ -10,13 +10,13 @@ OPTION ephemeral
 
 COPY usr
 
-PKG git-tiny go125
+PKG git-tiny go126
 
 CMD git clone https://github.com/gtsteffaniak/filebrowser.git && \
     cd filebrowser && \
     git checkout tags/${version} && \
     cd backend && \
-    go125 mod vendor && \
+    go126 mod vendor && \
     cp -a vendor /filebrowser-quantum-vendor && \
     tar --gzip -C / -cf /filebrowser-quantum-${version}.vendor.tar.gz filebrowser-quantum-vendor
 CMD --local-jaildir cp -a filebrowser-quantum-${version}.vendor.tar.gz "${output}"
