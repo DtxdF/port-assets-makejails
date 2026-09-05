@@ -1,5 +1,5 @@
 JAIL?=		flatnotes-frontend
-VERSION?=	v5.5.4
+VERSION?=	v5.5.5
 OUTPUT?=	${PWD}
 
 all: build stop

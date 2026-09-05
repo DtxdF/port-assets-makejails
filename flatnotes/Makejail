@@ -8,7 +8,7 @@ OPTION ip4_inherit
 OPTION ip6_inherit
 OPTION ephemeral
 
-PKG git-tiny npm-node20
+PKG git-tiny npm-node24
 
 CMD git clone https://github.com/dullage/flatnotes.git && \
     cd flatnotes && \
