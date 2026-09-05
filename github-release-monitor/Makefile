@@ -1,31 +1,53 @@
-VERSION?=	v2.0.0
+NAME?=		github-release-monitor-assets
+VERSION?=	v2.6.0
 OUTPUT?=	${PWD}
+INSTANCE_ID!=	uuidgen -r
 ASSET=		github-release-monitor-${VERSION}.tar.gz
 
-.PHONY: all build-env build apply
+.PHONY: all
+all: build-frontend
 
-all: build-env build apply ${ASSET}
+.PHONY: build-frontend
+build-frontend: build-env app.yml
+	@env NAME=${NAME} \
+	     INSTANCE_ID=${INSTANCE_ID} \
+	         overlord apply -f app.yml
+	@make ${ASSET}
+	@make clean-frontend
 
+.PHONY: cancel-frontend
+cancel-frontend: build-env app.yml
+	@env NAME=${NAME} \
+	     INSTANCE_ID=${INSTANCE_ID} \
+	         overlord cancel -f app.yml
+
+.PHONY: app.yml
+app.yml:
+	@cat build.sh | sed -Ee 's/%%VERSION%%/'${VERSION}'/' | yq '.cloud-init.user-data.write_files[0].content = load_str("/dev/stdin")' ../app.yml.template > app.yml
+
+${ASSET}:
+	@env OUTPUT=${OUTPUT} \
+	     ASSET=${ASSET} \
+	     VM_HOSTNAME=${NAME} \
+	         ../wait-and-download.sh
+
+.PHONY: clean-frontend
+clean-frontend: build-env app.yml
+	@env NAME=${NAME} \
+	     INSTANCE_ID=${INSTANCE_ID} \
+		     overlord destroy -Ff app.yml
+
+.PHONY: frontend-status
+frontend-status: build-env app.yml
+	@echo "===> Project information:"
+	@env NAME=${NAME} \
+	     INSTANCE_ID=${INSTANCE_ID} \
+		     overlord get-info -f app.yml -t projects --filter-per-project
+	@echo "===> VM information:"
+	@env NAME=${NAME} \
+	     INSTANCE_ID=${INSTANCE_ID} \
+		     overlord get-info -f app.yml -t vm --filter-per-project
+
+.PHONY: build-env
 build-env:
-	@sops decrypt .enc.env > .env
-
-build:
-	@cat app.yml.template | sed -Ee 's/%%VERSION%%/${VERSION}/g' > app.yml
-
-apply: build
-	@overlord apply -f app.yml
-
-cancel: build
-	@overlord cancel -f app.yml
-
-${ASSET}: build-env
-	@env ASSET=${ASSET} OUTPUT=${OUTPUT} ./wait-and-download.sh
-
-project-info:
-	@overlord get-info -f app.yml -t projects --filter-per-project
-
-vm-info:
-	@overlord get-info -f app.yml -t vm --filter-per-project
-
-clean: build
-	@overlord destroy -Ff app.yml
+	@(sops decrypt ../.enc.env && sops decrypt .enc.env) > .env
