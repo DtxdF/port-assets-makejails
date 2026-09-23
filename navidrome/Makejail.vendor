@@ -10,12 +10,12 @@ OPTION ephemeral
 
 COPY usr
 
-PKG git-tiny go126
+PKG git-tiny go127
 
 CMD git clone https://github.com/navidrome/navidrome.git && \
     cd navidrome && \
     git checkout tags/${version} && \
-    go126 mod vendor && \
+    go127 mod vendor && \
     cp -a vendor /navidrome-vendor && \
     tar --gzip -C / -cf /navidrome-${version}.vendor.tar.gz navidrome-vendor
 CMD --local-jaildir cp -a navidrome-${version}.vendor.tar.gz "${output}"

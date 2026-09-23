@@ -1,5 +1,5 @@
 JAIL?=		navidrome-assets
-VERSION?=	v0.63.2
+VERSION?=	v0.64.1
 OUTPUT?=	${PWD}
 
 all: build stop
