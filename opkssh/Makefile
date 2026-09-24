@@ -1,5 +1,5 @@
 JAIL?=		opkssh-assets
-VERSION?=	v0.10.0
+VERSION?=	v0.16.0
 OUTPUT?=	${PWD}
 
 all: build stop
