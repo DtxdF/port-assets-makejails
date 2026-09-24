@@ -1,5 +1,5 @@
 NAME?=		homepage-assets
-VERSION?=	v2.1.2
+VERSION?=	v2.4.0
 OUTPUT?=	${PWD}
 INSTANCE_ID!=	uuidgen -r
 ASSET=		homepage-${VERSION}.tar.gz
