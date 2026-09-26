@@ -1,5 +1,5 @@
 NAME?=		nginx-ui-assets
-VERSION?=	v2.5.10
+VERSION?=	v2.6.3
 OUTPUT?=	${PWD}
 INSTANCE_ID!=	uuidgen -r
 ASSET=		nginx-ui-${VERSION}.frontend.tar.gz
