@@ -11,12 +11,12 @@ OPTION ephemeral
 
 COPY usr
 
-PKG git-tiny go125
+PKG git-tiny go127
 
 CMD git clone https://github.com/sheshbabu/zen.git && \
     cd zen && \
     git checkout ${version} && \
-    go125 mod vendor && \
+    go127 mod vendor && \
     cp -a vendor /zen-vendor && \
     tar --gzip -C / -cf /zen-${extra}-${version}.vendor.tar.gz zen-vendor
 CMD --local-jaildir cp -a zen-${extra}-${version}.vendor.tar.gz "${output}"

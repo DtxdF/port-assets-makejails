@@ -1,6 +1,6 @@
 JAIL?=		zen-assets
-VERSION?=	c8e14d70de7de631cd9d4cda55daccf227283d92
-EXTRA?=		1.5.0.20260429
+VERSION?=	6c716f7b17c5757ff282917963400ee679e2dfe4
+EXTRA?=		1.5.0.20261008
 OUTPUT?=	${PWD}
 
 all: build stop
