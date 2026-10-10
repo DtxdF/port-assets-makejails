@@ -8,14 +8,22 @@ OPTION ip4_inherit
 OPTION ip6_inherit
 OPTION ephemeral
 
+COPY usr
+
 PKG git-tiny npm
 
 CMD git clone https://github.com/kern/filepizza.git && \
     cd filepizza && \
     git checkout ${version} && \
-    corepack enable && \
-    env CI=true pnpm install --frozen-lockfile && \
-    env CI=true pnpm build && \
+    export COREPACK_ENABLE_DOWNLOAD_PROMPT=0 && \
+    corepack enable
+COPY pnpm-workspace.yaml filepizza/pnpm-workspace.yaml
+CMD cd filepizza && \
+    export CI=true && \
+    sed -i '' -Ee 's/("next":[[:space:]]*)"[^"]+"/\1"15.5.19"/' package.json && \
+    pnpm install --lockfile-only && \
+    pnpm install --frozen-lockfile && \
+    pnpm build && \
     mkdir -p /filepizza-files && \
     cp -a public /filepizza-files && \
     cp -a .next/standalone/ /filepizza-files && \
